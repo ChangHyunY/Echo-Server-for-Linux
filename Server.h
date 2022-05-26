@@ -73,17 +73,20 @@ public:
 				PKT_RES_IN SendPkt;
 				SendPkt.Init();
 				SendPkt.nIsSuccess = Database::GetInstance()->Check_User(pPacket->uniqueCode, string(pPacket->gameCode).substr(0, 8).c_str());
-				m_SessionList[nSessionID]->SetName(Database::GetInstance()->get_last_unique_code().c_str());
-				m_SessionList[nSessionID]->SetSEQ(stoi(Database::GetInstance()->get_seq_num(m_SessionList[nSessionID]->GetName())));
-				sprintf(SendPkt.uniqueCode, "%s", m_SessionList[nSessionID]->GetName());
-				m_SessionList[nSessionID]->PostSend(false, SendPkt.nSize, (char*)&SendPkt);
+				if(SendPkt.nIsSuccess)
+				{
+					m_SessionList[nSessionID]->SetName(Database::GetInstance()->get_last_unique_code().c_str());
+					m_SessionList[nSessionID]->SetSEQ(stoi(Database::GetInstance()->get_seq_num(m_SessionList[nSessionID]->GetName())));
+					sprintf(SendPkt.uniqueCode, "%s", m_SessionList[nSessionID]->GetName());
+					m_SessionList[nSessionID]->PostSend(false, SendPkt.nSize, (char*)&SendPkt);
 
-				PKT_RES_SCORE SendScore;
-				SendScore.Init();
-				Database::GetInstance()->get_user_score(m_SessionList[nSessionID]->GetSEQ(), SendScore.nScore);
-				m_SessionList[nSessionID]->PostSend(false, SendScore.nSize, (char*)&SendScore);
+					PKT_RES_SCORE SendScore;
+					SendScore.Init();
+					Database::GetInstance()->get_user_score(m_SessionList[nSessionID]->GetSEQ(), SendScore.nScore);
+					m_SessionList[nSessionID]->PostSend(false, SendScore.nSize, (char*)&SendScore);
 
-				Database::GetInstance()->update_date(m_SessionList[nSessionID]->GetSEQ());
+					Database::GetInstance()->update_date(m_SessionList[nSessionID]->GetSEQ());
+				}
 			}
 			break;
 
